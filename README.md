@@ -62,7 +62,14 @@ def compute_accuracy(y_true, y_pred):
 ### 数据结构
 ```python
 ── init_data
-│ └── data
-│   ├── train
-│   └── test
+    └── data
+        ├── train
+          └── fold
+            └──a.jpg
+            └──b.jpg
+        ├── test
+          └── fold
+            └──a.jpg
+            └──b.jpg
+    annos.csv
 ```
