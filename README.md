@@ -193,7 +193,7 @@ callbacks_list=[ReduceLROnPlateau(monitor='val_loss',factor=0.1, patience=10,ver
 ```python
 siamese.compile(optimizer=Adam(lr=0.01),loss=contrastive_loss,metrics=[accuracy])
 ```
-#### 模型训练
+#### 开始训练
 ```python
 history = siamese.fit(
       [x1_train,x2_train],y_train,
@@ -203,4 +203,54 @@ history = siamese.fit(
     batch_size=64,
     callbacks=callbacks_list,
       epochs=100)
+```
+## 模型推理
+#### 导入权重
+```python
+model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'model\\model_weight.h5')
+def base_net(input_tensor_shape):
+    '''Base network to be shared (eq. to feature extraction).
+    '''
+    input = Input(input_tensor_shape)
+    conv_base = ResNet152V2(weights='imagenet',
+                         include_top=False)
+    conv_base.trainable = False
+    net = conv_base(input)
+    net = layers.Flatten()(net)
+    net=layers.Dropout(0.4)(net)
+    net = layers.Dense(512, activation='relu')(net)
+    return keras.Model(input, net)
+
+input_a=Input(shape=(64,64,3))
+input_b=Input(shape=(64,64,3))
+
+base_network=base_net((64,64,3))
+processed_a=base_network(input_a)
+processed_b=base_network(input_b)
+merge_layer = layers.Lambda(euclidean_distance)([processed_a, processed_b],tf.float32)
+normal_layer = tf.keras.layers.BatchNormalization()(merge_layer)
+output_layer = layers.Dense(1, activation="sigmoid")(normal_layer)
+
+# 创建模型
+siamese = keras.Model([input_a, input_b], outputs=output_layer)
+# 模型编译
+siamese.compile(optimizer=Adam(lr=0.01),loss=contrastive_loss,metrics=[accuracy])
+# 导入权重
+siamese.load_weights(model_path)
+```
+#### 模型推理
+```python
+# 读取测试集
+x1_test,x2_test,y_test,= loadData(test_dir,'test')
+d={'x1':x1_test,'x2':x2_test,'label':y_test}
+df=pd.DataFrame(d)
+
+# 把输入图片转化为张量
+x1_test,x2_test,y_test = get_tensor(x1_test,x2_test,y_test)
+x1_test,x2_test,y_test = preprocess(x1_test,x2_test,y_test)
+
+# 模型推理
+result = siamese.predict([x1_test,x2_test])
+df['predict']=result
+df.to_csv('result\\result.csv',index=None)
 ```
