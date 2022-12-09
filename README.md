@@ -59,7 +59,7 @@ def compute_accuracy(y_true, y_pred):
     return np.mean(pred == y_true)
 ```
 ## 数据准备
-#### 数据结构 
+### 数据结构 
 ```python
 ── init_data
     ── data
@@ -73,7 +73,7 @@ def compute_accuracy(y_true, y_pred):
            └── b.jpg
     ── annos.csv
 ```
-#### 读取数据
+### 读取数据
 ```python
 #训练集
 train_dir = 'init_data/data/train/'
@@ -118,7 +118,7 @@ x1_train,x2_train,y_train=loadData(train_dir,'train')
 x1_test,x2_test,y_test,=loadData(test_dir,'test')
 ```
 ## 模型训练
-#### 导入图片并转化为张量 load_img to tensor
+### 导入图片并转化为张量 load_img to tensor
 ```python
 def get_tensor(image1_list, image2_list,label_list):
     img1 = []
@@ -147,7 +147,7 @@ def get_tensor(image1_list, image2_list,label_list):
     y = tf.convert_to_tensor(label_list)
     return img1,img2,y
 ```
-#### 对数据进行归一化
+### 对数据进行归一化
 ```python
 def preprocess(x1,x2,y):
     x1 = tf.cast(x1,dtype=tf.float32) / 255.0
@@ -163,7 +163,7 @@ x1_train,x2_train,y_train = preprocess(x1_train,x2_train,y_train)
 x1_test,x2_test,y_test = get_tensor(x1_test,x2_test,y_test)
 x1_test,x2_test,y_test = preprocess(x1_test,x2_test,y_test)
 ```
-#### 定义模型输入
+### 定义模型输入
 ```python
 # 两张图片输入的尺寸为(64,64,3)
 input_a=Input(shape=(64,64,3))
@@ -185,20 +185,20 @@ normal_layer = tf.keras.layers.BatchNormalization()(merge_layer)
 # 全连接激活函数
 output_layer = layers.Dense(1, activation="sigmoid")(normal_layer)
 ```
-#### 创建模型
+### 创建模型
 ```python
 siamese = keras.Model([input_a, input_b], outputs=output_layer)
 ```
-#### 回调函数
+### 回调函数
 ```python
 callbacks_list=[ReduceLROnPlateau(monitor='val_loss',factor=0.1, patience=10,verbose=1),
                 ModelCheckpoint(filepath='code\\model\\model_weight.h5',monitor='val_loss',save_best_only=True)]
 ```
-#### 模型编译
+### 模型编译
 ```python
 siamese.compile(optimizer=Adam(lr=0.01),loss=contrastive_loss,metrics=[accuracy])
 ```
-#### 开始训练
+### 开始训练
 ```python
 history = siamese.fit(
       [x1_train,x2_train],y_train,
@@ -210,7 +210,7 @@ history = siamese.fit(
       epochs=100)
 ```
 ## 模型推理
-#### 导入权重
+### 导入权重
 ```python
 model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'model\\model_weight.h5')
 def base_net(input_tensor_shape):
@@ -243,7 +243,7 @@ siamese.compile(optimizer=Adam(lr=0.01),loss=contrastive_loss,metrics=[accuracy]
 # 导入权重
 siamese.load_weights(model_path)
 ```
-#### 模型推理
+### 模型推理
 ```python
 # 读取测试集
 test_dir = 'init_data/data/test/'
