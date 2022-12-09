@@ -18,7 +18,9 @@ tensorflow_gpu==2.10.0
 ## 定义网络
 ### 构建Siamese网络
 #### 欧式距离
-`def euclidean_distance(vects):
+```python
+def euclidean_distance(vects):
     x, y = vects
     sum_square = tf.math.reduce_sum(tf.math.square(x - y), axis=1, keepdims=True)
-    return tf.math.sqrt(tf.math.maximum(sum_square, tf.keras.backend.epsilon()))`
+    return tf.math.sqrt(tf.math.maximum(sum_square, tf.keras.backend.epsilon()))
+```
