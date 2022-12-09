@@ -260,3 +260,13 @@ result = siamese.predict([x1_test,x2_test])
 df['predict']=result
 df.to_csv('result\\result.csv',index=None)
 ```
+## 注意事项
+### 文件路径问题
+```python
+# 因为数据和代码文件不在同一个目录下，如需要运行代码，需要在代码里加上以下代码切换路径，运行一次注销掉即可
+# 获取当前路径
+os.getcwd()
+# 切换上级路径
+upDir = os.path.pardir
+os.chdir(upDir)
+```
