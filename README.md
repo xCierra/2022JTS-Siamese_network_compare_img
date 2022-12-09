@@ -8,14 +8,14 @@
 5. [模型推理 Predict](#模型推理)
 6. [注意事项 Attention](#注意事项)
 
-## 所需环境 Environment
+## 所需环境
 keras==2.10.0
 numpy==1.21.3
 opencv_python==4.5.4.58
 pandas==1.3.4
 tensorflow_gpu==2.10.0
 
-## 定义网络 Data Preparation
+## 定义网络
 ### 构建Siamese网络
 #### 欧式距离
 ```python
@@ -73,7 +73,7 @@ def compute_accuracy(y_true, y_pred):
            └── b.jpg
     ── annos.csv
 ```
-### 读取数据 LoadData
+### 读取数据
 ```python
 def loadData(datadir,type):
     img1_path=[]
@@ -112,7 +112,7 @@ def loadData(datadir,type):
 x1_train,x2_train,y_train=loadData(train_dir,'train')
 x1_test,x2_test,y_test,=loadData(test_dir,'test')
 ```
-## 模型训练 Train
+## 模型训练
 ### 导入图片并转化为张量 load_img to tensor
 ```python
 def get_tensor(image1_list, image2_list,label_list):
