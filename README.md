@@ -79,26 +79,26 @@ def loadData(datadir,type):
     img1_path=[]
     img2_path=[]
     labels=[]
-    #获取train/test路径下的文件夹
+    # 获取train/test路径下的文件夹
     for i in os.listdir(datadir):
         # 路径拼接获取train路径下文件夹里的文件
         for fn in os.listdir(os.path.join(datadir, str(i))):
-            #判断后缀是否为jpg
+            # 判断后缀是否为jpg
             if fn.endswith('.jpg'):
-                #拼接完整的文件路径
+                # 拼接完整的文件路径
                 fd = os.path.join(datadir, str(i), fn)
                 # print(fd)
-                #切分文件夹两张图片的路径分别放到img1_path、img2_path
+                # 切分文件夹两张图片的路径分别放到img1_path、img2_path
                 if os.path.split(fd)[1]=='a.jpg':
                     img1_path.append(fd)
                 else:
                     img2_path.append(fd)
 
-                #按照8:2的比例，前480为训练集，后120为测试集，在导入数据前，需要手动把数据放到对应的文件夹，参考数据结构
+                # 按照8:2的比例，前480为训练集，后120为测试集，在导入数据前，需要手动把数据放到对应的文件夹，参考数据结构
                 annos=pd.read_csv('init_data/data/annos.csv')
                 
-                #如果类型是'train'读取csv文件标签列前480行
-                #如果类型是'test'读取csv文件标签列后120行
+                # 如果类型是'train'读取csv文件标签列前480行
+                # 如果类型是'test'读取csv文件标签列后120行
                 if type == 'train':
                     labels=annos['label'][:480]
                     labels.append(labels)
@@ -108,7 +108,7 @@ def loadData(datadir,type):
 
     return img1_path, img2_path,np.array(labels)
 
-#获取img1和img2的路径和label
+# 获取img1和img2的路径和label
 x1_train,x2_train,y_train=loadData(train_dir,'train')
 x1_test,x2_test,y_test,=loadData(test_dir,'test')
 ```
