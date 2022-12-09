@@ -112,3 +112,5 @@ def loadData(datadir,type):
 x1_train,x2_train,y_train=loadData(train_dir,'train')
 x1_test,x2_test,y_test,=loadData(test_dir,'test')
 ```
+## 模型训练
+### 导入图片并转化为张量 load_img to tensor
