@@ -59,7 +59,7 @@ def compute_accuracy(y_true, y_pred):
     return np.mean(pred == y_true)
 ```
 ## 数据准备
-### 数据结构
+### 数据结构 
 ```python
 ── init_data
     ── data
@@ -113,4 +113,32 @@ x1_train,x2_train,y_train=loadData(train_dir,'train')
 x1_test,x2_test,y_test,=loadData(test_dir,'test')
 ```
 ## 模型训练
-### 导入图片并转化为张量 load_img to tensor
+### 导入图片并转化为张量 loadimg to tensor
+```python
+def get_tensor(image1_list, image2_list,label_list):
+    img1 = []
+    img2 = []
+    for image1 in image1_list:
+        #读取路径下的图片
+        x = tf.io.read_file(image1)
+        #将路径映射为照片,3通道
+        x = tf.image.decode_jpeg(x, channels=3)
+        #修改图像大小为(64,64)
+        x = tf.image.resize(x,[64,64])
+        #将图像压入列表中
+        img1.append(x)
+    for image2 in image2_list:
+        #读取路径下的图片
+        x = tf.io.read_file(image2)
+        #将路径映射为照片,3通道
+        x = tf.image.decode_jpeg(x, channels=3)
+        #修改图像大小(64,64)
+        x = tf.image.resize(x,[64,64])
+        #将图像压入列表中
+        img2.append(x)
+    #将列表转换成tensor类型
+    img1 = tf.convert_to_tensor(img1)
+    img2 = tf.convert_to_tensor(img2)
+    y = tf.convert_to_tensor(label_list)
+    return img1,img2,y
+```
