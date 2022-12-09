@@ -270,3 +270,5 @@ os.getcwd()
 upDir = os.path.pardir
 os.chdir(upDir)
 ```
+### 模型推理
+#### 如需运行推理代码，需要先注销掉train.py里的fit方法
