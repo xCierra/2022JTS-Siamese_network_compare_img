@@ -58,3 +58,9 @@ def compute_accuracy(y_true, y_pred):
     pred = y_pred.ravel() < 0.5
     return np.mean(pred == y_true)
 ```
+## 数据准备
+### 数据结构
+── init_data
+│ └── data
+│   ├── train
+│   └── test
