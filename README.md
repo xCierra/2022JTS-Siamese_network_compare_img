@@ -75,6 +75,11 @@ def compute_accuracy(y_true, y_pred):
 ```
 #### 读取数据
 ```python
+#训练集
+train_dir = 'init_data/data/train/'
+#测试集
+test_dir = 'init_data/data/test/'
+
 def loadData(datadir,type):
     img1_path=[]
     img2_path=[]
@@ -241,6 +246,7 @@ siamese.load_weights(model_path)
 #### 模型推理
 ```python
 # 读取测试集
+test_dir = 'init_data/data/test/'
 x1_test,x2_test,y_test,= loadData(test_dir,'test')
 d={'x1':x1_test,'x2':x2_test,'label':y_test}
 df=pd.DataFrame(d)
