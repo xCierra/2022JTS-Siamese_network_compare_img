@@ -158,4 +158,49 @@ x1_train,x2_train,y_train = preprocess(x1_train,x2_train,y_train)
 x1_test,x2_test,y_test = get_tensor(x1_test,x2_test,y_test)
 x1_test,x2_test,y_test = preprocess(x1_test,x2_test,y_test)
 ```
-#### 定义
+#### 定义模型输入
+```python
+# 两张图片输入的尺寸为(64,64,3)
+input_a=Input(shape=(64,64,3))
+input_b=Input(shape=(64,64,3))
+
+# 输入模型张量的尺寸为(64,64,3)
+base_network=base_net((64,64,3))
+
+# 把两张图片输入进模型
+processed_a=base_network(input_a)
+processed_b=base_network(input_b)
+
+# 定义 lambda layer 实现欧式距离计算
+merge_layer = layers.Lambda(euclidean_distance)([processed_a, processed_b],tf.float32)
+
+# 定义批标准化层
+normal_layer = tf.keras.layers.BatchNormalization()(merge_layer)
+
+# 全连接激活函数
+output_layer = layers.Dense(1, activation="sigmoid")(normal_layer)
+```
+#### 创建模型
+```python
+siamese = keras.Model([input_a, input_b], outputs=output_layer)
+```
+#### 回调函数
+```python
+callbacks_list=[ReduceLROnPlateau(monitor='val_loss',factor=0.1, patience=10,verbose=1),
+                ModelCheckpoint(filepath='code\\model\\model_weight.h5',monitor='val_loss',save_best_only=True)]
+```
+#### 模型编译
+```python
+siamese.compile(optimizer=Adam(lr=0.01),loss=contrastive_loss,metrics=[accuracy])
+```
+#### 模型训练
+```python
+history = siamese.fit(
+      [x1_train,x2_train],y_train,
+    steps_per_epoch=8,
+    validation_data=([x1_test,x2_test],y_test),
+    validation_steps=2,
+    batch_size=64,
+    callbacks=callbacks_list,
+      epochs=100)
+```
