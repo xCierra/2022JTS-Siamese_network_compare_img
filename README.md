@@ -63,13 +63,13 @@ def compute_accuracy(y_true, y_pred):
 ```python
 ── init_data
     └── data
-        ├── train
-          └── fold
-            └──a.jpg
-            └──b.jpg
-        ├── test
-          └── fold
-            └──a.jpg
-            └──b.jpg
+      └── train
+        ├── folds
+          └── a.jpg
+          └── b.jpg
+      └── test
+         ├── folds
+           └── a.jpg
+           └── b.jpg
     annos.csv
 ```
