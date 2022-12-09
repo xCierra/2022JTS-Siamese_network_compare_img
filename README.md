@@ -59,7 +59,7 @@ def compute_accuracy(y_true, y_pred):
     return np.mean(pred == y_true)
 ```
 ## 数据准备
-### 数据结构 
+#### 数据结构 
 ```python
 ── init_data
     ── data
@@ -73,7 +73,7 @@ def compute_accuracy(y_true, y_pred):
            └── b.jpg
     ── annos.csv
 ```
-### 读取数据
+#### 读取数据
 ```python
 def loadData(datadir,type):
     img1_path=[]
@@ -113,7 +113,7 @@ x1_train,x2_train,y_train=loadData(train_dir,'train')
 x1_test,x2_test,y_test,=loadData(test_dir,'test')
 ```
 ## 模型训练
-### 导入图片并转化为张量 load_img to tensor
+#### 导入图片并转化为张量 load_img to tensor
 ```python
 def get_tensor(image1_list, image2_list,label_list):
     img1 = []
@@ -142,7 +142,7 @@ def get_tensor(image1_list, image2_list,label_list):
     y = tf.convert_to_tensor(label_list)
     return img1,img2,y
 ```
-### 对数据进行归一化
+#### 对数据进行归一化
 ```python
 def preprocess(x1,x2,y):
     x1 = tf.cast(x1,dtype=tf.float32) / 255.0
@@ -158,3 +158,4 @@ x1_train,x2_train,y_train = preprocess(x1_train,x2_train,y_train)
 x1_test,x2_test,y_test = get_tensor(x1_test,x2_test,y_test)
 x1_test,x2_test,y_test = preprocess(x1_test,x2_test,y_test)
 ```
+#### 定义
