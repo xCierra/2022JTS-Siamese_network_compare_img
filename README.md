@@ -62,7 +62,7 @@ def compute_accuracy(y_true, y_pred):
 ### 数据结构
 ```python
 ── init_data
-    └── data
+    ── data
       └── train
         ├── folds
           └── a.jpg
