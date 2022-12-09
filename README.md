@@ -149,7 +149,7 @@ def preprocess(x1,x2,y):
     x2 = tf.cast(x2,dtype=tf.float32) / 255.0
     y = tf.cast(y, dtype=tf.float32)
     return x1,x2,y
-```
+
 # 把训练集转化为张量
 x1_train,x2_train,y_train = get_tensor(x1_train,x2_train,y_train)
 x1_train,x2_train,y_train = preprocess(x1_train,x2_train,y_train)
@@ -157,3 +157,4 @@ x1_train,x2_train,y_train = preprocess(x1_train,x2_train,y_train)
 # 把测试集转化为张量
 x1_test,x2_test,y_test = get_tensor(x1_test,x2_test,y_test)
 x1_test,x2_test,y_test = preprocess(x1_test,x2_test,y_test)
+```
