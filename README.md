@@ -60,7 +60,9 @@ def compute_accuracy(y_true, y_pred):
 ```
 ## 数据准备
 ### 数据结构
+```python
 ── init_data
 │ └── data
 │   ├── train
 │   └── test
+```
