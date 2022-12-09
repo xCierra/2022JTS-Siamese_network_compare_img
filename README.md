@@ -71,5 +71,5 @@ def compute_accuracy(y_true, y_pred):
          ├── folds
            └── a.jpg
            └── b.jpg
-    annos.csv
+ ── annos.csv
 ```
