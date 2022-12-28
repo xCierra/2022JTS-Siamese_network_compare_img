@@ -40,12 +40,11 @@ def contrastive_loss(y_true, y_pred):
 ```python
 def base_net(input_tensor_shape):
     input = Input(input_tensor_shape)
-    conv_base = ResNet152V2(weights='imagenet',
+    conv_base = ResNet50(weights='imagenet',
                          include_top=False)
     conv_base.trainable = False
     net = conv_base(input)
     net = layers.Flatten()(net)
-    net=layers.Dropout(0.1)(net)
     net = layers.Dense(512, activation='relu')(net)
     return keras.Model(input, net)
 ```
@@ -84,32 +83,35 @@ def loadData(datadir,type):
     img1_path=[]
     img2_path=[]
     labels=[]
-    # 获取train/test路径下的文件夹
-    for i in os.listdir(datadir):
-        # 路径拼接获取train路径下文件夹里的文件
-        for fn in os.listdir(os.path.join(datadir, str(i))):
-            # 判断后缀是否为jpg
-            if fn.endswith('.jpg'):
-                # 拼接完整的文件路径
-                fd = os.path.join(datadir, str(i), fn)
-                # print(fd)
-                # 切分文件夹两张图片的路径分别放到img1_path、img2_path
-                if os.path.split(fd)[1]=='a.jpg':
-                    img1_path.append(fd)
-                else:
-                    img2_path.append(fd)
+    paths = os.listdir(datadir)
+    #把train路径下的文件夹列表按数字顺序排序，防止传入pair时数据集和标签错位
+    paths.sort(key=lambda x:int(x.split('.')[0]))
+    print(paths)
+    for i in paths:
+        # 获取train/test路径下的文件夹
+            # 路径拼接获取train/test路径下文件夹里的文件
+            for fn in os.listdir(os.path.join(datadir, str(i))):
+                # 判断后缀是否为jpg
+                if fn.endswith('.jpg'):
+                    # 拼接完整的文件路径
+                    fd = os.path.join(datadir, str(i), fn)
+                    # print(fd)
+                    #切分文件夹两张图片的路径分别放到img1_path、img2_path
+                    if os.path.split(fd)[1]=='a.jpg':
+                        img1_path.append(fd)
+                    else:
+                        img2_path.append(fd)
 
-                # 按照8:2的比例，前480为训练集，后120为测试集，在导入数据前，需要手动把数据放到对应的文件夹，参考数据结构
-                annos=pd.read_csv('init_data/data/annos.csv')
-                
-                # 如果类型是'train'读取csv文件标签列前480行
-                # 如果类型是'test'读取csv文件标签列后120行
-                if type == 'train':
-                    labels=annos['label'][:480]
-                    labels.append(labels)
-                else:
-                    labels=annos['label'][480:]
-                    labels.append(labels)
+                    # 按照8:2的比例，前480为训练集，后120为测试集，在导入数据前，需要手动把数据放到对应的文件夹，参考数据结构
+                    annos=pd.read_csv('init_data/data/annos.csv')
+                    # 如果类型是'train'读取csv文件标签列前480行
+                    # 如果类型是'test'读取csv文件标签列后120行
+                    if type == 'train':
+                        labels=annos['label'][:480]
+                        labels.append(labels)
+                    else:
+                        labels=annos['label'][480:]
+                        labels.append(labels)
 
     return img1_path, img2_path,np.array(labels)
 
@@ -191,12 +193,12 @@ siamese = keras.Model([input_a, input_b], outputs=output_layer)
 ```
 ### 回调函数
 ```python
-callbacks_list=[ReduceLROnPlateau(monitor='val_loss',factor=0.1, patience=10,verbose=1),
+callbacks_list=[EarlyStopping(monitor='val_accuracy',patience=80 ,restore_best_weights=True,verbose=1,mode='max'),
                 ModelCheckpoint(filepath='code\\model\\model_weight.h5',monitor='val_loss',save_best_only=True)]
 ```
 ### 模型编译
 ```python
-siamese.compile(optimizer=Adam(lr=0.01),loss=contrastive_loss,metrics=[accuracy])
+siamese.compile(optimizer=Adam(lr=0.001),loss=contrastive_loss,metrics=[accuracy])
 ```
 ### 开始训练
 ```python
@@ -217,12 +219,11 @@ def base_net(input_tensor_shape):
     '''Base network to be shared (eq. to feature extraction).
     '''
     input = Input(input_tensor_shape)
-    conv_base = ResNet152V2(weights='imagenet',
+    conv_base = ResNet50(weights='imagenet',
                          include_top=False)
     conv_base.trainable = False
     net = conv_base(input)
     net = layers.Flatten()(net)
-    net=layers.Dropout(0.4)(net)
     net = layers.Dense(512, activation='relu')(net)
     return keras.Model(input, net)
 
